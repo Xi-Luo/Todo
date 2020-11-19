@@ -2,40 +2,24 @@
   <div>
     <section class="todoapp">
       <header class="header"><h1>todos</h1>
-        <input autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
+        <input autofocus="autofocus" autocomplete="off"
+               placeholder="What needs to be done?"
+               class="new-todo" @keyup.enter="newItem" v-model="newOne">
       </header>
       <section class="main">
       <input id="toggle-all" type="checkbox" class="toggle-all">
         <label for="toggle-all">Mark all as complete</label>
-        <ul class="todo-list" v-for="item in list" v-bind:key="item.id">
+        <ul class="todo-list" v-for="(item, index) in list" v-bind:key="index">
           <li class="todo">
             <div class="view">
             <input type="checkbox" class="toggle">
               <label>{{item.name}}</label>
-              <button class="destroy"></button>
+              <button class="destroy" @click="deleteOne(index)"></button>
             </div>
             <input type="text" class="edit">
 
           </li>
         </ul>
-<!--        <ul class="todo-list">-->
-<!--          <li class="todo">-->
-<!--            <div class="view">-->
-<!--            <input type="checkbox" class="toggle">-->
-<!--            <label>aaa</label>-->
-<!--            <button class="destroy"></button>-->
-<!--            </div>-->
-<!--            <input type="text" class="edit">-->
-<!--          </li>-->
-<!--          <li class="todo completed">-->
-<!--            <div class="view">-->
-<!--              <input type="checkbox" class="toggle">-->
-<!--              <label>dd</label>-->
-<!--              <button class="destroy"></button>-->
-<!--            </div>-->
-<!--            <input type="text" class="edit">-->
-<!--          </li>-->
-<!--        </ul>-->
       </section>
       <footer class="footer"><span class="todo-count">
         <strong>1</strong> item left
@@ -62,12 +46,7 @@ export default {
 name: "todo",
   data(){
     return {
-      itemLeft:'',
-      name:'',
-      content:{
-        id:'',
-        name:''
-      },
+      newOne:'',
       list:[
         {
           id: 1,
@@ -84,8 +63,16 @@ name: "todo",
   methods:{
 
     newItem() {
-
-
+      console.log('here is newitem')
+      let l = {
+        id: this.list.length,
+        name: this.newOne,
+        done:false
+      }
+      this.list.push(l);
+    },
+    deleteOne(index){
+      this.list.splice(index,1)
     },
     clearComplete(){
       for(let i =0;i<this.list.length;i++){
