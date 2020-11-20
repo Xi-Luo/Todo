@@ -9,10 +9,10 @@
       <section class="main">
       <input id="toggle-all" type="checkbox" class="toggle-all">
         <label for="toggle-all">Mark all as complete</label>
-        <ul class="todo-list" v-for="(item, index) in list" v-bind:key="index">
+        <ul class="todo-list" v-for="(item, index) in showList" v-bind:key="index">
           <li class="todo">
             <div class="view">
-            <input type="checkbox" class="toggle">
+            <input type="checkbox" class="toggle" @click="check(index)">
               <label>{{item.name}}</label>
               <button class="destroy" @click="deleteOne(index)"></button>
             </div>
@@ -24,9 +24,9 @@
       <footer class="footer"><span class="todo-count">
         <strong>1</strong> item left
 				</span> <ul class="filters">
-      <li><a href="#/all" class="selected">All</a></li>
-      <li><a href="#/active" class="">Active</a></li>
-      <li><a href="#/completed" class="">Completed</a></li>
+      <li><a href="#/all" :class="{selected:choice===1}" @click="all(1)">All</a></li>
+      <li><a href="#/active"  :class="{selected:choice===2}" @click="active(2)">Active</a></li>
+      <li><a href="#/completed" v-bind:class="{selected:choice===3}" @click="completed(3)">Completed</a></li>
     </ul>
       <button class="clear-completed" @click="clearComplete">
       Clear completed
@@ -46,7 +46,9 @@ export default {
 name: "todo",
   data(){
     return {
+      choice:'',
       newOne:'',
+      showList:[],
       list:[
         {
           id: 1,
@@ -60,16 +62,39 @@ name: "todo",
       ]
     }
   },
+  created() {
+    this.showList = this.list;
+  },
+  watch:{
+  list(){console.log('watch',this.list)},
+  showList(){console.log('watch',this.showList)}
+  },
   methods:{
 
     newItem() {
-      console.log('here is newitem')
       let l = {
         id: this.list.length,
         name: this.newOne,
         done:false
       }
       this.list.push(l);
+      this.active();
+      this.newOne = '';
+    },
+    // check(index){
+    //
+    // },
+    all(index){
+      this.choice = index;
+      this.showList = this.list.filter(function (li){return li})
+    },
+    active(index){
+      this.choice = index;
+      this.showList = this.list.filter(function (li){return !(li.done)})
+    },
+    completed(index){
+      this.choice = index;
+      this.showList = this.list.filter(function (li){return li.done})
     },
     deleteOne(index){
       this.list.splice(index,1)
