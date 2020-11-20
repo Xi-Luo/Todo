@@ -22,11 +22,12 @@
         </ul>
       </section>
       <footer class="footer"><span class="todo-count">
-        <strong>1</strong> item left
+        <span v-if="quantity==1"><strong>1</strong> item left</span>
+        <span v-if="quantity!=1"><strong>{{quantity}}</strong> items left</span>
 				</span> <ul class="filters">
       <li><a href="#/all" :class="{selected:choice===1}" @click="all(1)">All</a></li>
       <li><a href="#/active"  :class="{selected:choice===2}" @click="active(2)">Active</a></li>
-      <li><a href="#/completed" v-bind:class="{selected:choice===3}" @click="completed(3)">Completed</a></li>
+      <li><a href="#/completed" :class="{selected:choice===3}" @click="completed(3)">Completed</a></li>
     </ul>
       <button class="clear-completed" @click="clearComplete">
       Clear completed
@@ -46,7 +47,8 @@ export default {
 name: "todo",
   data(){
     return {
-      choice:'',
+      quantity:'',
+      choice:1,
       newOne:'',
       showList:[],
       list:[
@@ -64,10 +66,12 @@ name: "todo",
   },
   created() {
     this.showList = this.list;
+    this.quantity = this.list.filter(function (li){return !li.done}).length
   },
   watch:{
   list(){console.log('watch',this.list)},
-  showList(){console.log('watch',this.showList)}
+  showList(){console.log('watch',this.showList)},
+  choice(){console.log('watch',this.choice)}
   },
   methods:{
 
@@ -78,8 +82,9 @@ name: "todo",
         done:false
       }
       this.list.push(l);
-      this.active();
+      this.showList = this.list.filter(function (li){return !(li.done)})
       this.newOne = '';
+      this.quantity = this.list.filter(function (li){return !(li.done)}).length;
     },
     // check(index){
     //
