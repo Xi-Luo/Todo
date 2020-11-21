@@ -8,12 +8,12 @@
       </header>
       <section class="main">
       <input id="toggle-all" type="checkbox" class="toggle-all">
-        <label for="toggle-all">Mark all as complete</label>
+        <label for="toggle-all" @click="allChange">Mark all as complete</label>
         <ul class="todo-list" v-for="(item, index) in showList" v-bind:key="index">
           <li class="todo">
             <div class="view">
-            <input type="checkbox" class="toggle" @click="check(index)">
-              <label>{{item.name}}</label>
+            <input type="checkbox" class="toggle" v-model="item.done">
+              <label @dblclick="editItem(item)">{{item.name}}</label>
               <button class="destroy" @click="deleteOne(index)"></button>
             </div>
             <input type="text" class="edit">
@@ -39,6 +39,7 @@
       <p>Written by <a href="http://evanyou.me">Evan You</a></p>
       <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
     </footer>
+
   </div>
 </template>
 <script>
@@ -85,6 +86,21 @@ name: "todo",
       this.showList = this.list.filter(function (li){return !(li.done)})
       this.newOne = '';
       this.quantity = this.list.filter(function (li){return !(li.done)}).length;
+    },
+    allChange(){
+      let count=0;
+      for(let i = 0;i<this.list.length;i++){
+        if(this.list[i].done===false){
+          count ++;
+          this.list[i].done = true;
+        }
+      }
+      if(count===0){
+        for(let i = 0;i<this.list.length;i++){
+          this.list[i].done = false;
+
+        }
+      }
     },
     // check(index){
     //
