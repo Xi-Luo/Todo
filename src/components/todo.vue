@@ -15,7 +15,7 @@
             <div v-show="!(item.editable)" class="view">
 
             <input type="checkbox" class="toggle" v-model="item.done">
-              <label  @dblclick="editItem(item,index)">{{item.name}}</label>
+              <label :class="{line:item.done}" @dblclick="editItem(item,index)">{{item.name}}</label>
               <button class="destroy" @click="deleteOne(item, index)"></button>
             </div>
             <input v-show="item.editable"
@@ -91,7 +91,9 @@ name: "todo",
         editable:false
       }
       this.list.push(l);
-      //this.showList = this.list.filter(function (li){return !(li.done)})
+      if(this.choice===2){
+        this.showList.push(l);
+      }
       this.newOne = '';
       this.quantity = this.list.filter(function (li){return !(li.done)}).length;
     },
@@ -157,5 +159,12 @@ name: "todo",
 
 <style lang="css">
 @import "../assets/base.css";
+.line{
+  text-decoration: line-through;
+  color: lightgray !important;
+  font-style: italic;
+}
 @import "../assets/index.css";
+
+
 </style>
