@@ -11,13 +11,16 @@
         <label for="toggle-all" @click="allChange">Mark all as complete</label>
         <ul class="todo-list" v-for="(item, index) in showList" v-bind:key="index">
           <li class="todo">
-            <div class="view">
-            <input type="checkbox" class="toggle" v-model="item.done">
-              <label @dblclick="editItem(item)">{{item.name}}</label>
-              <button class="destroy" @click="deleteOne(index)"></button>
-            </div>
-            <input type="text" class="edit">
 
+            <div v-show="!(item.editable)" class="view">
+
+            <input type="checkbox" class="toggle" v-model="item.done">
+              <label  @dblclick="editItem(item,index)">{{item.name}}</label>
+              <button class="destroy" @click="deleteOne(item, index)"></button>
+            </div>
+            <input v-show="item.editable"
+                   style="display: inline" class="edit"
+                   type="text" v-model="item.name" value="item.name" @keyup.enter="confirm(item)">
           </li>
         </ul>
       </section>
@@ -51,16 +54,20 @@ name: "todo",
       quantity:'',
       choice:1,
       newOne:'',
+      editShow:false,
       showList:[],
       list:[
         {
-          id: 1,
+          id: 0,
           name:'aaa',
-          done:true},
+          done:true,
+          editable: false
+        },
         {
-          id:2,
+          id:1,
           name: 'bbb',
-          done:false
+          done:false,
+          editable: false
         }
       ]
     }
@@ -80,10 +87,11 @@ name: "todo",
       let l = {
         id: this.list.length,
         name: this.newOne,
-        done:false
+        done:false,
+        editable:false
       }
       this.list.push(l);
-      this.showList = this.list.filter(function (li){return !(li.done)})
+      //this.showList = this.list.filter(function (li){return !(li.done)})
       this.newOne = '';
       this.quantity = this.list.filter(function (li){return !(li.done)}).length;
     },
@@ -102,9 +110,10 @@ name: "todo",
         }
       }
     },
-    // check(index){
-    //
-    // },
+    editItem(item){
+      item.editable = true;
+      console.log('this  is eidt item',item.editable)
+    },
     all(index){
       this.choice = index;
       this.showList = this.list.filter(function (li){return li})
@@ -117,8 +126,17 @@ name: "todo",
       this.choice = index;
       this.showList = this.list.filter(function (li){return li.done})
     },
-    deleteOne(index){
-      this.list.splice(index,1)
+    deleteOne(item,index){
+      this.showList.splice(index,1);
+      console.log(item, index)
+      for(let i = 0;i<this.list.length; i++){
+        if(item.id===this.list[i].id){
+          this.list.splice(i,1);
+        }
+      }
+      this.quantity--;
+
+
     },
     clearComplete(){
       for(let i =0;i<this.list.length;i++){
@@ -126,8 +144,10 @@ name: "todo",
           this.list.splice(i,1);
         }
       }
+    },
+    confirm(item){
+      item.editable= false;
     }
-
   },
   computed:{
 
