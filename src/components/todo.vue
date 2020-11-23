@@ -24,7 +24,7 @@
           </li>
         </ul>
       </section>
-      <footer class="footer"><span class="todo-count">
+      <footer v-if="hasData" class="footer"><span class="todo-count">
         <span v-if="quantity==1"><strong>1</strong> item left</span>
         <span v-if="quantity!=1"><strong>{{quantity}}</strong> items left</span>
 				</span> <ul class="filters">
@@ -56,20 +56,8 @@ name: "todo",
       newOne:'',
       editShow:false,
       showList:[],
-      list:[
-        {
-          id: 0,
-          name:'aaa',
-          done:true,
-          editable: false
-        },
-        {
-          id:1,
-          name: 'bbb',
-          done:false,
-          editable: false
-        }
-      ]
+      list:[],
+      hasData: false
     }
   },
   created() {
@@ -77,9 +65,14 @@ name: "todo",
     this.quantity = this.list.filter(function (li){return !li.done}).length
   },
   watch:{
-  list(){console.log('watch',this.list)},
-  showList(){console.log('watch',this.showList)},
-  choice(){console.log('watch',this.choice)}
+  list(){
+    console.log('watch',this.list)
+    if (this.list.length!==0){
+      this.hasData = true;
+    }else {
+      this.hasData = false;
+    }
+  }
   },
   methods:{
 
